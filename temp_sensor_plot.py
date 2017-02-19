@@ -3,11 +3,22 @@ import time
 import datetime
 import csv
 import pandas as pd
-
+import numpy as np
+import RPi.GPIO as GPIO
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
 style.use('ggplot')
+
+GPIO.setmode(GPIO.BOARD)
+GPIO.setwarnings(False)
+GPIO.setup(11,GPIO.OUT)
+GPIO.setup(13,GPIO.OUT)
+GPIO.setup(15,GPIO.OUT)
+
+
+
+
 
 
 
@@ -52,18 +63,30 @@ def animate(i):
 
 
     xar = [datetime.datetime.strptime(time, '%H:%M:%S').time() for time in df['Time'].values]
-
     yar = df['Temperature'].values
+
+    regsteps = 20
+    m, b= np.polyfit(np.arange(regsteps), df['Temperature'].tail(regsteps), 1)
+    led_reg(m)
 
     ax1.clear()
     ax1.plot(xar, yar)
 
+def led_reg(slope):
+
+    if(slope > 0):
+        GPIO.output(11, GPIO.HIGH)
+        GPIO.output(15, GPIO.LOW)
+    if(slope < 0):
+        GPIO.output(11, GPIO.LOW)
+        GPIO.output(15, GPIO.HIGH)
+        
+
 
 fig = plt.figure('Temperature')
 ax1 = fig.add_subplot(111)
-#ax1.legend('Temp')
-#ax1.set(xlabel='Time')
-#ax1.set(ylabel='Temperature [C°]')
+
+
 
 ani = animation.FuncAnimation(fig, animate, interval=1000)
 plt.show()

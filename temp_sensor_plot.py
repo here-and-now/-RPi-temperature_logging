@@ -2,6 +2,7 @@ import os
 import time
 import datetime
 import csv
+import atexit
 import pandas as pd
 import numpy as np
 import RPi.GPIO as GPIO
@@ -15,11 +16,6 @@ GPIO.setwarnings(False)
 GPIO.setup(11,GPIO.OUT)
 GPIO.setup(13,GPIO.OUT)
 GPIO.setup(15,GPIO.OUT)
-
-
-
-
-
 
 
 os.system('modprobe w1-gpio')
@@ -80,15 +76,15 @@ def led_reg(slope):
     if(slope < 0):
         GPIO.output(11, GPIO.LOW)
         GPIO.output(15, GPIO.HIGH)
-        
 
 
-fig = plt.figure('Temperature')
-ax1 = fig.add_subplot(111)
+try:
+    fig = plt.figure('Temperature')
+    ax1 = fig.add_subplot(111)
+    
 
-
-
-ani = animation.FuncAnimation(fig, animate, interval=1000)
-plt.show()
-
+    ani = animation.FuncAnimation(fig, animate, interval=1000)
+    plt.show()
+finally:
+    GPIO.cleanup()
     

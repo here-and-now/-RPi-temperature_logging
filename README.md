@@ -2,3 +2,4 @@
 
 Temperature logging with RaspberryPi + Temperature sensor DS18S20. Includes logging with timestamp to .csv file and liveplotting with matplotlib
 ![alt tag](http://i.imgur.com/XGLOd0B.jpg)
+![alt_tag](https://i.imgur.com/QsZBM28g.png)

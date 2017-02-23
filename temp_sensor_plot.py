@@ -56,18 +56,28 @@ def animate(i):
     read_temp()
 
     df = pd.read_csv('temp_log.csv', delimiter='\t', index_col = 0)
-
-
+    day_back = 0
+    day = datetime.datetime.now() - datetime.timedelta(days=day_back)
+    day = day.strftime('%Y-%m-%d')
+    #df = df[df.index == datetime.datetime.now().strftime('%Y-%m-%d') - datetime.timedelta(days=1)]
+    #df_back = df
+    
+    df = df[df.index == day]
     xar = [datetime.datetime.strptime(time, '%H:%M:%S').time() for time in df['Time'].values]
     yar = df['Temperature'].values
 
-    regsteps = 20
+    #df_back = df_back[df_back.index == day]
+    #xar2 = [datetime.datetime.strptime(time, '%H:%M:%S').time() for time in df_back['Time'].values]
+    #yar2 = df_back['Temperature'].values
+
+    regsteps = 200
     m, b= np.polyfit(np.arange(regsteps), df['Temperature'].tail(regsteps), 1)
     led_reg(m)
 
     ax1.clear()
     ax1.plot(xar, yar)
-
+    #ax2.clear()
+    #ax2.plot(xar2, yar2)
 def led_reg(slope):
 
     if(slope > 0):
@@ -81,8 +91,7 @@ def led_reg(slope):
 try:
     fig = plt.figure('Temperature')
     ax1 = fig.add_subplot(111)
-    
-
+    #ax2 = fig.add_subplot(211)
     ani = animation.FuncAnimation(fig, animate, interval=1000)
     plt.show()
 finally:
